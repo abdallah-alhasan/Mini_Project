@@ -6,7 +6,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $image = $_POST["image"];
     $description = $_POST["description"];
     setcookie('"' . str_replace(" ", "", $name) . '"' , "<div class=\"row p-2 bg-white border rounded\">
-    <div class=\"col-md-3 mt-1\"><img class=\"img-fluid img-responsive rounded product-image\" src=\"https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940\"></div>
+    <div class=\"col-md-3 mt-1\"><img class=\"img-fluid img-responsive rounded product-image\" src=\"$image\" onerror=\"this.src='https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'\" /> </div>
     <div class=\"col-md-6 mt-1\">
         <h5>$name</h5>
         <div class=\"mt-1 mb-1 spec-1\">Quantity: <span>$qty</span></div>
