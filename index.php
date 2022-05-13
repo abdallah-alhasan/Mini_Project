@@ -1,4 +1,17 @@
-
+<?php
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+    foreach($_COOKIE as $key => $value){
+        if (isset($_COOKIE[$key])) {
+            unset($_COOKIE[$key]); 
+            setcookie($key, null, -1, '/'); 
+            header("Refresh:0");
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -13,6 +26,16 @@
     <link
     href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
     rel="stylesheet">
+    <style>
+        .display{
+            width: 500px;
+        }
+    @media screen and (max-width:450px) {
+        .display{
+            display: none !important;
+        }
+    }
+    </style>
   </head>
   
   <body>
@@ -45,7 +68,7 @@
                 <strong><i class="fa fa-plus"></i> Add New Product</strong>
             </div>
             <div class="card-body">
-                <form action="products.php" method="POST">
+                <form action="products.php" method="POST" enctype="multipart/form-data">
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="name" class="col-form-label">Name</label>
@@ -63,7 +86,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="image" class="col-form-label">Image</label>
-                            <input type="text" class="form-control" name="image" id="image" placeholder="Image URL">
+                            <input type="file" class="form-control" name="image" id="image" placeholder="Image URL">
                         </div>
                     </div>
                     <div class="form-group">
@@ -88,21 +111,33 @@
                     <a href="#" class="btn btn-success float-right mb-3"><i class="fa fa-plus"></i> Add New</a>
                 </div>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped col-md">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Product Details</th>
+                        <th class = "display">Product Details</th>
+                        <th>Key Name</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
-                <?php 
+                <?php
                 if(count($_COOKIE) > 0){
-                $i = 1;
-                    foreach($_COOKIE as $value){
+                    $i = 1;
+                    foreach($_COOKIE as $key => $value){
                         echo "<tbody>
                         <tr>
                             <td>$i</td>
-                            <td>$value</td>
+                            <td class ='display' >$value</td>
+                            <td>$key</td>
+                            <td>
+                                <form action='index.php' method = 'POST'>
+                                    <div class=\"form-row\">
+                                        <div class=\"form-group col-md\">
+                                            <input type=\"submit\" class=\"form-control btn btn-sm btn-danger\" id=\"delete$i\" value=\"delete\" name=\"delete$i\"  required>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
                         </tr>
                     </tbody>";
                     $i++;
@@ -110,7 +145,6 @@
                 }else{
                     echo "<h1> No products added </h1>";
                 }
-                
                 ?>
             </table>
         </div>

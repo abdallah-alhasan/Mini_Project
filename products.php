@@ -1,14 +1,38 @@
-<?php 
+<?php
+//onerror=\"this.src='https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'\"
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $name = $_POST["name"];
+    $file = $_FILES["image"];
+    $imagename = $_FILES["image"]['name'];
+    $imageTmpName = $_FILES["image"]['tmp_name'];
+    $imageSize = $_FILES["image"]['size'];
+    $imageError = $_FILES["image"]['error'];
+    $imageType = $_FILES["image"]['type'];
+    $imageExt = explode('.' , $imagename);
+    $imageactualExt = strtolower(end($imageExt));
+    $allowed = ['jpeg' , 'jpg' , 'png'];
+    if (in_array($imageactualExt , $allowed)) {
+      if ($imageError === 0 ){
+        if ($imageSize < 5000000){
+          $imageNewName  = uniqid('' , true) . "." . $imageactualExt;
+          $imageDestination = 'uploads/' . $imagename;
+          move_uploaded_file($imageTmpName , $imageDestination);
+        } else{
+          echo "Maximum size is 500mb";
+        }
+      } else {
+        echo "Its seems there is an error uploading your image";
+      }
+    } else{
+      echo "You can not upload a file of this type!";
+    }
+    $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING);
     $price = $_POST["price"];
     $qty = $_POST["qty"];
-    $image = $_POST["image"];
-    $description = $_POST["description"];
+    $description = filter_var($_POST["description"], FILTER_SANITIZE_STRING);
     setcookie('"' . str_replace(" ", "", $name) . '"' , "<div class=\"row p-2 bg-white border rounded\">
-    <div class=\"col-md-3 mt-1\"><img class=\"img-fluid img-responsive rounded product-image\" src=\"$image\" onerror=\"this.src='https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'\" /> </div>
+    <div class=\"col-md-3 mt-1\"><img class=\"img-fluid img-responsive rounded product-image\" src=\"uploads/$imagename \"  /> </div>
     <div class=\"col-md-6 mt-1\">
-        <h5>$name</h5>
+        <h1>$name</h1>
         <div class=\"mt-1 mb-1 spec-1\">Quantity: <span>$qty</span></div>
         <p class=\"text-justify para mb-0\">$description<br><br></p>
         <h4 class=\"mr-1\">$$price</h4>
@@ -17,8 +41,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     header("Refresh:0");
 }
 ?>
-
-
 <!doctype html>
 <html lang="en">
   <head>
